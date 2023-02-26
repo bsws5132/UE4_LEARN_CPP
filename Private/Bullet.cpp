@@ -30,7 +30,7 @@ ABullet::ABullet()
 void ABullet::BeginPlay()
 {
 	Super::BeginPlay();
-	// ¹Ú½ºÄÄÆ÷³ÍÆ®ÀÇ Ãæµ¹ ¿À¹ö·¦ ÀÌº¥Æ®¿¡ OnBulletOverlap ¿¬°á
+	// ë°•ìŠ¤ì»´í¬ë„ŒíŠ¸ì˜ ì¶©ëŒ ì˜¤ë²„ëž© ì´ë²¤íŠ¸ì— OnBulletOverlap ì—°ê²°
 	boxcomp->OnComponentBeginOverlap.AddDynamic(this, &ABullet::OnBulletOverlap);
 }
 
@@ -40,10 +40,10 @@ void ABullet::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 
-	// Àü¹æÀ¸·Î ÀÌµ¿µÉ À§Ä¡ °è»ê 
+	// ì „ë°©ìœ¼ë¡œ ì´ë™ë  ìœ„ì¹˜ ê³„ì‚° 
 	FVector newLocation = GetActorLocation() + GetActorForwardVector() * moveSpeed * DeltaTime;
 
-	// °è»êµÈ À§Ä¡ÁÂÇ¥ °»½Å
+	// ê³„ì‚°ëœ ìœ„ì¹˜ì¢Œí‘œ ê°±ì‹ 
 	SetActorLocation(newLocation);
 }
 
@@ -58,17 +58,20 @@ void ABullet::OnBulletOverlap
 	const FHitResult& SweepResult
 )
 {
+	FString OtherActorName = OtherActor->GetName();
+	UE_LOG(LogTemp, Warning, TEXT("Collided with %s"), *OtherActorName);
+
+
 	AEnemy* enemy = Cast<AEnemy>(OtherActor);
 
 	if (enemy != nullptr)
 	{
-		// Ãæµ¹ÇÑ ¾×ÅÍ¸¦ Á¦°ÅÇÑ´Ù
+		// ì¶©ëŒí•œ ì•¡í„°ë¥¼ ì œê±°í•œë‹¤
 		OtherActor->Destroy();
 		
 	}
 
 	Destroy();
 
-	FString OtherActorName = OtherActor->GetName();
-	UE_LOG(LogTemp, Warning, TEXT("Collided with %s"), *OtherActorName);
+	
 }
