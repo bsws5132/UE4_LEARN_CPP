@@ -6,7 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Enemy.h"
-
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABullet::ABullet()
@@ -30,7 +30,7 @@ ABullet::ABullet()
 void ABullet::BeginPlay()
 {
 	Super::BeginPlay();
-	// ë°•ìŠ¤ì»´í¬ë„ŒíŠ¸ì˜ ì¶©ëŒ ì˜¤ë²„ëž© ì´ë²¤íŠ¸ì— OnBulletOverlap ì—°ê²°
+	// ¹Ú½ºÄÄÆ÷³ÍÆ®ÀÇ Ãæµ¹ ¿À¹ö·¦ ÀÌº¥Æ®¿¡ OnBulletOverlap ¿¬°á
 	boxcomp->OnComponentBeginOverlap.AddDynamic(this, &ABullet::OnBulletOverlap);
 }
 
@@ -40,10 +40,10 @@ void ABullet::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 
-	// ì „ë°©ìœ¼ë¡œ ì´ë™ë  ìœ„ì¹˜ ê³„ì‚° 
+	// Àü¹æÀ¸·Î ÀÌµ¿µÉ À§Ä¡ °è»ê 
 	FVector newLocation = GetActorLocation() + GetActorForwardVector() * moveSpeed * DeltaTime;
 
-	// ê³„ì‚°ëœ ìœ„ì¹˜ì¢Œí‘œ ê°±ì‹ 
+	// °è»êµÈ À§Ä¡ÁÂÇ¥ °»½Å
 	SetActorLocation(newLocation);
 }
 
@@ -58,20 +58,23 @@ void ABullet::OnBulletOverlap
 	const FHitResult& SweepResult
 )
 {
+	// Ãæµ¹ °¨Áö µð¹ö±× ÄÚµå
 	FString OtherActorName = OtherActor->GetName();
 	UE_LOG(LogTemp, Warning, TEXT("Collided with %s"), *OtherActorName);
+
 
 
 	AEnemy* enemy = Cast<AEnemy>(OtherActor);
 
 	if (enemy != nullptr)
 	{
-		// ì¶©ëŒí•œ ì•¡í„°ë¥¼ ì œê±°í•œë‹¤
+		// Ãæµ¹ÇÑ ¾×ÅÍ¸¦ Á¦°ÅÇÑ´Ù
 		OtherActor->Destroy();
 		
+
+		// Æø¹ß ÀÌÆåÆ® »ý¼º
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), explosionFX, GetActorLocation(), GetActorRotation());
 	}
 
 	Destroy();
-
-	
 }

@@ -32,6 +32,9 @@ public:
 	UPROPERTY(EditAnyWhere)
 	class UStaticMeshComponent* meshComp; 
 
+	UPROPERTY(EditAnyWhere)
+	class UParticleSystem* explosionFX;
+
 	UFUNCTION() 
 	void OnBulletOverlap
 	(

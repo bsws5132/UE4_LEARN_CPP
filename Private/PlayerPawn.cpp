@@ -43,9 +43,14 @@ APlayerPawn::APlayerPawn()
 	//Object Type를 1번 채널(Player)로 설정
 	boxComp->SetCollisionObjectType(ECC_EngineTraceChannel1);
 
+	// 모든 채널을 응답 없음으로 설정
 	boxComp->SetCollisionResponseToAllChannels(ECR_Ignore);
 
+	// 에너미와는 충돌 이벤트 체크(Quary)를 한다.
 	boxComp->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Overlap);
+
+	//WorldStatic 채널에 대한 응답을 Block로 변경.
+	boxComp->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
 }
 
 // Called when the game starts or when spawned
@@ -73,7 +78,7 @@ void APlayerPawn::Tick(float DeltaTime)
 
 	// 4.  현재 액터의 위치 좌표를 앞에서 구한 새 좌표로 갱신
 
-	SetActorLocation(newLocation);
+	SetActorLocation(newLocation, true);
 }
 
 // Called to bind functionality to input
