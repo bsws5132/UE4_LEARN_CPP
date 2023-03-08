@@ -7,7 +7,7 @@
 #include "Components/ArrowComponent.h"
 #include "Enemy.h"
 #include "Kismet/GameplayStatics.h"
-
+#include "ShootingGameModeBase.h"
 // Sets default values
 ABullet::ABullet()
 {
@@ -74,7 +74,20 @@ void ABullet::OnBulletOverlap
 
 		// 폭발 이펙트 생성
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), explosionFX, GetActorLocation(), GetActorRotation());
-	}
 
+		// 현재 게임 모드를 가져온다
+		AGameModeBase* currentMode = GetWorld()->GetAuthGameMode();
+
+		// AShootingGameModeBase 클래스로 변환
+		AShootingGameModeBase* currentGameModeBase = Cast<AShootingGameModeBase>(currentMode);
+
+		// 만일, 게임 모드 베이스를 가져오면?
+		if (currentGameModeBase != nullptr)
+		{
+			// 게임 모드 베이스의 점수를 1점 추가한다.
+			currentGameModeBase->AddScore(1);
+		}
+	}
+	// 자기자신 제거
 	Destroy();
 }
